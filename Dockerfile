@@ -6,7 +6,8 @@ RUN apt-get update -y && apt-get install git python python-pip -y
 RUN cd /tmp \
     && git clone https://github.com/olmoser/tornado-websocket-example.git \
     && cd tornado-websocket-example \
-    && pip install -r requirements.txt
+    && pip install -r requirements.txt \
+	&& echo "Done"
 
 EXPOSE 8888
 

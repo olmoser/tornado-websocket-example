@@ -66,37 +66,39 @@
 
     <hr>
     <h3>REST API examples</h3>
-    <ol>
-      <li>Set the "id 1" value to 100
-        <ul><li>curl "http://hiroakis.com:8888/api?id=1&amp;value=100"</li></ul>
-      </li>
-      <li>Set the "id 1" value to 300 ( The row No 1 will change to yellow )
-        <ul><li>curl "http://hiroakis.com:8888/api?id=1&amp;value=300"</li></ul>
-      </li>
-      <li>Set The "id 1" value to 600 ( The row No 1 will change to red )
-        <ul><li>curl "http://hiroakis.com:8888/api?id=1&amp;value=600"</li></ul>
-      </li>
-    </ol>
-    <ul>
-      <li>value 201 - 500 : change to yellow</li>
-      <li>value 501 - : change to red</li>
-    </ul>
-    <img src="./rest_api_example.png"/>
+
+	<div>
+		<pre id="curl"></pre>
+	</div>
   </div>
   <script>
     var host = window.location.host;
-    var ws = new WebSocket('wss://'+host+'/ws');
+    var ws = "ws";
+	if (location.protocol === 'https:') {
+		ws = "wss"
+	}
+
+    var ws = new WebSocket(ws + '://'+host+'/ws');
     var $message = $('#message');
+
+    var messagesReceived = 0;
+
+	var cookie = document.cookie;
+	console.log("Cookies: " + cookie)
+    var curl = "curl -v -H'Cookie: " + cookie + "' '" + location.protocol + "://$USER:$PASSWORD@" + host + "/api?id=3&value=1000'"
+    $('#curl').text(curl);
+
 
     ws.onopen = function(){
       $message.attr("class", 'label label-success');
       $message.text('open');
     };
     ws.onmessage = function(ev){
+	  messagesReceived++;	
       $message.attr("class", 'label label-info');
       $message.hide();
       $message.fadeIn("slow");
-      $message.text('recieved message');
+      $message.text('received message (total ' + messagesReceived + ')');
 
       var json = JSON.parse(ev.data);
       $('#' + json.id).hide();
